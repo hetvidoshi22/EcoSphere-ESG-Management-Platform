@@ -9,6 +9,7 @@ import {
 } from '@/db/schema'
 import { conflict, notFound, unprocessable } from '@/server/errors'
 import { notify, notifyRole } from '@/server/services/notification'
+import { emailCsrApproved } from '@/server/services/mail'
 import { getEsgConfig } from '@/server/services/config'
 import { recalculateScores } from '@/server/services/score/recalculate'
 
@@ -171,6 +172,8 @@ export async function approveParticipation(participationId: string) {
     'CSR participation approved',
     `You earned ${points} points for "${activityTitle}".`,
   )
+
+  await emailCsrApproved(p.userId, activityTitle ?? 'a CSR activity', points)
 
   await recalculateScores()
   return updated
