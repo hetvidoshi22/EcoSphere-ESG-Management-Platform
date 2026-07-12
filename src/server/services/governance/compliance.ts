@@ -4,6 +4,7 @@ import { complianceIssues, audits, departments, users } from '@/db/schema'
 import type { ComplianceCreate } from '@/server/validators/governance'
 import { notFound } from '@/server/errors'
 import { notify, notifyRole } from '@/server/services/notification'
+import { emailComplianceAssigned } from '@/server/services/mail'
 import { recalculateScores } from '@/server/services/score/recalculate'
 
 export interface ComplianceIssueView {
@@ -85,6 +86,7 @@ export async function createComplianceIssue(data: ComplianceCreate) {
     'Compliance issue assigned to you',
     `${data.description}${overdue ? ' (already past due)' : ''}`,
   )
+  await emailComplianceAssigned(row.ownerId, data.description, data.severity, row.dueDate)
   await Promise.all([
     notifyRole('COMPLIANCE_OFFICER', 'COMPLIANCE', 'New compliance issue raised', data.description),
     notifyRole('ADMIN', 'COMPLIANCE', 'New compliance issue raised', data.description),

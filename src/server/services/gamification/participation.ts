@@ -3,6 +3,7 @@ import { challengeParticipations, challenges } from "@/db/schema";
 import { eq, and, sql, count } from "drizzle-orm";
 import { awardXpAndEvaluate } from "./badge";
 import { notify } from "../notification";
+import { emailChallengeApproved } from "../mail";
 
 export async function joinChallenge(userId: string, challengeId: string) {
   // 1. Fetch challenge to check constraints
@@ -92,7 +93,8 @@ export async function approveParticipation(participationId: string) {
       userId: challengeParticipations.userId,
       status: challengeParticipations.status,
       challengeId: challenges.id,
-      xpReward: challenges.xpReward
+      xpReward: challenges.xpReward,
+      title: challenges.title
     })
     .from(challengeParticipations)
     .innerJoin(challenges, eq(challengeParticipations.challengeId, challenges.id))
@@ -130,6 +132,8 @@ export async function approveParticipation(participationId: string) {
 
   // 4. Notify user
   await notify(record.userId, "APPROVAL", "Challenge Approved!", `You earned ${amount} XP for completing a challenge.`);
+
+  await emailChallengeApproved(record.userId, record.title, amount);
 
   return updated;
 }

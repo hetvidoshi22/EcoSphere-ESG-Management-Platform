@@ -4,6 +4,7 @@ import {
 } from "@/db/schema";
 import { eq, and, sql, count } from "drizzle-orm";
 import { notify } from "@/server/services/notification";
+import { emailBadgeUnlocked } from "@/server/services/mail";
 import { award, levelFor } from "./xp";
 
 export async function evaluate(userId: string) {
@@ -52,11 +53,12 @@ export async function evaluate(userId: string) {
         // If a row was actually inserted, we fire a notification
         if (result.rowCount && result.rowCount > 0) {
           await notify(
-            userId, 
-            "BADGE", 
-            `New Badge Unlocked: ${badge.name}`, 
+            userId,
+            "BADGE",
+            `New Badge Unlocked: ${badge.name}`,
             `You earned the ${badge.name} badge! Check it out in your profile.`
           );
+          await emailBadgeUnlocked(userId, badge.name, badge.icon);
         }
       } catch (error) {
         console.error("Error awarding badge:", error);

@@ -1,8 +1,10 @@
 import { count, desc, eq } from 'drizzle-orm'
 import { db } from '@/db'
-import { esgPolicies, policyAcknowledgements, departments } from '@/db/schema'
+import { esgPolicies, policyAcknowledgements, departments, users } from '@/db/schema'
 import type { PolicyCreate } from '@/server/validators/governance'
 import { notFound } from '@/server/errors'
+import { notify } from '@/server/services/notification'
+import { emailPolicyReminder } from '@/server/services/mail'
 
 export interface PolicyView {
   id: string
@@ -105,4 +107,34 @@ export async function deletePolicy(id: string) {
   await db.delete(policyAcknowledgements).where(eq(policyAcknowledgements.policyId, id))
   await db.delete(esgPolicies).where(eq(esgPolicies.id, id))
   return { id }
+}
+
+/**
+ * Send a policy-acknowledgement reminder (in-app notification + email) to
+ * every user who has NOT yet acknowledged the given policy. Returns how many
+ * users were reminded. Backs POST /api/policies/[id]/remind.
+ */
+export async function remindPolicyAcknowledgement(policyId: string) {
+  const policy = await getPolicy(policyId) // throws notFound if missing
+
+  const acked = await db
+    .select({ userId: policyAcknowledgements.userId })
+    .from(policyAcknowledgements)
+    .where(eq(policyAcknowledgements.policyId, policyId))
+  const ackedSet = new Set(acked.map((a) => a.userId))
+
+  const allUsers = await db.select({ id: users.id }).from(users)
+  const targets = allUsers.filter((u) => !ackedSet.has(u.id))
+
+  for (const u of targets) {
+    await notify(
+      u.id,
+      'POLICY_REMINDER',
+      'Policy acknowledgement reminder',
+      `Please review and acknowledge the policy: ${policy.title}`,
+    )
+    await emailPolicyReminder(u.id, policy.title)
+  }
+
+  return { policyId, reminded: targets.length }
 }

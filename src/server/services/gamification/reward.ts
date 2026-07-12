@@ -1,6 +1,7 @@
 import { db } from "@/db";
 import { rewards, rewardRedemptions, xpLedger, users } from "@/db/schema";
 import { eq, and, gt, sql, sum } from "drizzle-orm";
+import { emailRewardRedeemed } from "@/server/services/mail";
 
 export async function getPointsBalance(userId: string): Promise<number> {
   // Fetch lifetime XP
@@ -70,6 +71,8 @@ export async function redeem(userId: string, rewardId: string) {
       source: `redeem:${reward.id}`,
     })
   ]);
+
+  await emailRewardRedeemed(userId, reward.name, reward.pointsRequired);
 
   return { success: true, reward };
 }
