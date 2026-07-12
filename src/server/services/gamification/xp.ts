@@ -5,8 +5,7 @@ import {
 import { eq, sql, and, gte, count } from "drizzle-orm";
 
 export function levelFor(totalXp: number) {
-  // LEVELS is sorted ascending: Sprout (0), Grower (500), Steward (1500), Champion (3000), Guardian (6000+)
-  let currentLevel = LEVELS[0];
+  let currentLevel: typeof LEVELS[number] = LEVELS[0];
   for (const level of LEVELS) {
     if (totalXp >= level.min) {
       currentLevel = level;
