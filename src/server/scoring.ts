@@ -309,8 +309,12 @@ export function registerProviders() {
   if (registered) return
   registered = true
 
+  // --- REAL PROVIDERS ---
+  // eslint-disable-next-line @typescript-eslint/no-var-requires
+  const { environmentalScoreProvider } = require('@/server/services/score/environmental')
+  registerProvider(environmentalScoreProvider) // Mitesh
+
   // --- STUBS (replace with your real provider) ---
-  registerProvider(environmentalScoreStub) // Mitesh — replace with real environmental provider
   registerProvider(socialScoreStub) // Hetvi — replace with real social provider
   registerProvider(governanceScoreStub) // Hetvi — replace with real governance provider
 }
