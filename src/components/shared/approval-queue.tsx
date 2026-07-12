@@ -47,7 +47,7 @@ export function ApprovalQueue({
     return (
       <div className="space-y-2">
         {[...Array(3)].map((_, i) => (
-          <div key={i} className="h-16 animate-pulse rounded-lg bg-black/5" />
+          <div key={i} className="animate-es-shimmer h-16 rounded-lg bg-track" />
         ))}
       </div>
     )
@@ -69,7 +69,7 @@ export function ApprovalQueue({
       <button
         onClick={() => onReject(id)}
         disabled={busyId === id}
-        className="inline-flex items-center gap-1 rounded-md border border-red-200 bg-white px-2.5 py-1 text-xs font-semibold text-red-600 transition hover:bg-red-50 disabled:opacity-50"
+        className="inline-flex items-center gap-1 rounded-md border border-pill-red-fg/30 bg-surface px-2.5 py-1 text-xs font-semibold text-pill-red-fg transition hover:bg-pill-red-bg disabled:opacity-50"
       >
         <X className="h-3.5 w-3.5" /> Reject
       </button>
@@ -80,14 +80,14 @@ export function ApprovalQueue({
     url ? (
       <ProofButton url={url} />
     ) : (
-      <span className="text-xs text-brand-muted">No proof</span>
+      <span className="text-xs text-ink-2">No proof</span>
     )
 
   return (
-    <div className="overflow-hidden rounded-xl border border-black/5 bg-white">
+    <div className="overflow-hidden rounded-xl border border-line bg-surface">
       {/* Desktop table */}
       <table className="hidden w-full text-sm sm:table">
-        <thead className="border-b border-black/5 bg-brand-surface/60 text-left text-[11px] uppercase tracking-wide text-brand-muted">
+        <thead className="border-b border-line bg-canvas text-left text-[11px] uppercase tracking-wide text-faint">
           <tr>
             <th className="px-4 py-3 font-semibold">Employee</th>
             <th className="px-4 py-3 font-semibold">Activity</th>
@@ -97,22 +97,22 @@ export function ApprovalQueue({
             {canDecide && <th className="px-4 py-3 font-semibold">Decision</th>}
           </tr>
         </thead>
-        <tbody className="divide-y divide-black/5">
+        <tbody className="divide-y divide-line-soft">
           {items.map((it) => (
-            <tr key={it.id} className="hover:bg-brand-surface/40">
+            <tr key={it.id} className="hover:bg-accent-soft">
               <td className="px-4 py-3">
                 <div className="flex items-center gap-2">
-                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-brand-primary/10 text-[11px] font-semibold text-brand-primary-dark">
+                  <span className="flex h-7 w-7 items-center justify-center rounded-full bg-tint-green text-[11px] font-semibold text-pill-green-fg">
                     {initialsOf(it.personName)}
                   </span>
-                  <span className="font-medium text-brand-text">{it.personName ?? '—'}</span>
+                  <span className="font-medium text-ink">{it.personName ?? '—'}</span>
                 </div>
               </td>
-              <td className="px-4 py-3 text-brand-text">{it.subject ?? '—'}</td>
+              <td className="px-4 py-3 text-ink">{it.subject ?? '—'}</td>
               <td className="px-4 py-3">
                 <Proof url={it.proofUrl} />
               </td>
-              <td className="px-4 py-3 font-medium text-brand-text">
+              <td className="px-4 py-3 font-medium text-ink">
                 +{it.points ?? 0} {pointsLabel}
               </td>
               <td className="px-4 py-3">
@@ -123,7 +123,7 @@ export function ApprovalQueue({
                   {it.status === 'PENDING' ? (
                     <Decision id={it.id} />
                   ) : (
-                    <span className="text-xs text-brand-muted">Decided</span>
+                    <span className="text-xs text-ink-2">Decided</span>
                   )}
                 </td>
               )}
@@ -133,17 +133,17 @@ export function ApprovalQueue({
       </table>
 
       {/* Mobile cards */}
-      <div className="divide-y divide-black/5 sm:hidden">
+      <div className="divide-y divide-line-soft sm:hidden">
         {items.map((it) => (
           <div key={it.id} className="p-4">
             <div className="flex items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-primary/10 text-xs font-semibold text-brand-primary-dark">
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-tint-green text-xs font-semibold text-pill-green-fg">
                   {initialsOf(it.personName)}
                 </span>
                 <div className="min-w-0">
-                  <p className="truncate font-medium text-brand-text">{it.personName ?? '—'}</p>
-                  <p className="truncate text-xs text-brand-muted">{it.subject ?? '—'}</p>
+                  <p className="truncate font-medium text-ink">{it.personName ?? '—'}</p>
+                  <p className="truncate text-xs text-ink-2">{it.subject ?? '—'}</p>
                 </div>
               </div>
               <StatusPill status={it.status} />
@@ -151,7 +151,7 @@ export function ApprovalQueue({
             <div className="mt-3 flex items-center justify-between">
               <div className="flex items-center gap-4 text-xs">
                 <Proof url={it.proofUrl} />
-                <span className="font-medium text-brand-text">
+                <span className="font-medium text-ink">
                   +{it.points ?? 0} {pointsLabel}
                 </span>
               </div>

@@ -38,68 +38,78 @@ export default function SignIn() {
   }
 
   return (
-    <div className="min-h-screen flex">
+    <div className="flex min-h-screen bg-surface">
       {/* Left Panel - Brand */}
-      <div className="hidden lg:flex lg:w-1/2 bg-brand-primary text-white flex-col justify-between p-12">
-        <div>
-          <h1 className="text-4xl font-bold mb-2">EcoSphere</h1>
-          <p className="text-lg text-brand-primary/90">
-            ESG data, employee action and gamified engagement — in one system of record.
-          </p>
+      <div className="relative hidden flex-col justify-between overflow-hidden bg-[#33503C] p-14 text-white lg:flex lg:w-[45%]">
+        <div className="pointer-events-none absolute -right-20 -top-20 h-80 w-80 rounded-full bg-white/[0.04]" />
+        <div className="pointer-events-none absolute -bottom-28 -left-16 h-72 w-72 rounded-full bg-white/[0.03]" />
+
+        <div className="relative flex items-center gap-3">
+          <span className="flex h-[34px] w-[34px] items-center justify-center rounded-[9px] border border-white/25 bg-white/[0.14]">
+            <svg width="21" height="21" viewBox="0 0 32 32" fill="none">
+              <circle cx="16" cy="16" r="5.5" fill="#FFFFFF" />
+              <ellipse cx="16" cy="16" rx="10" ry="3.6" fill="none" stroke="#FFFFFF" strokeWidth="1.6" transform="rotate(-28 16 16)" />
+            </svg>
+          </span>
+          <span className="text-[19px] font-bold tracking-[-0.2px]">EcoSphere</span>
         </div>
 
-        <div className="space-y-6">
-          <div className="space-y-2">
-            <div className="text-sm text-brand-primary/70">Environmental Impact</div>
-            <div className="text-3xl font-bold">2,450 tCO₂e</div>
-            <div className="text-sm text-brand-primary/70">emissions tracked</div>
-          </div>
-          <div className="space-y-2">
-            <div className="text-sm text-brand-primary/70">Employee Engagement</div>
-            <div className="text-3xl font-bold">8,920</div>
-            <div className="text-sm text-brand-primary/70">active participants</div>
-          </div>
-          <div className="space-y-2">
-            <div className="text-sm text-brand-primary/70">Compliance Status</div>
-            <div className="text-3xl font-bold">98%</div>
-            <div className="text-sm text-brand-primary/70">audit compliance</div>
+        <div className="relative flex max-w-[420px] flex-col gap-7">
+          <p className="text-[32px] font-semibold leading-[1.28] tracking-[-0.5px]">
+            ESG data, employee action and gamified engagement — in one system of record.
+          </p>
+          <div className="flex flex-col">
+            <div className="flex items-baseline gap-3 border-t border-white/15 py-3">
+              <span className="min-w-[110px] text-[20px] font-semibold tabular-nums">2,450 tCO₂e</span>
+              <span className="text-[13px] text-white/65">emissions tracked</span>
+            </div>
+            <div className="flex items-baseline gap-3 border-t border-white/15 py-3">
+              <span className="min-w-[110px] text-[20px] font-semibold tabular-nums">8,920</span>
+              <span className="text-[13px] text-white/65">active participants</span>
+            </div>
+            <div className="flex items-baseline gap-3 border-y border-white/15 py-3">
+              <span className="min-w-[110px] text-[20px] font-semibold tabular-nums">98%</span>
+              <span className="text-[13px] text-white/65">audit compliance</span>
+            </div>
           </div>
         </div>
+
+        <div className="relative text-[11.5px] text-white/45">© 2026 EcoSphere · ESG Management Platform</div>
       </div>
 
       {/* Right Panel - Form */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-12 bg-brand-background">
+      <div className="flex flex-1 items-center justify-center bg-surface p-6 sm:p-12">
         <div className="w-full max-w-md">
-          <h2 className="text-2xl font-bold text-brand-text mb-2">Welcome back</h2>
-          <p className="text-gray-600 mb-8">Sign in to your ESG management platform</p>
+          <h2 className="mb-2 text-[20px] font-semibold text-ink">Welcome back</h2>
+          <p className="mb-8 text-[13px] text-ink-2">Sign in to your ESG management platform</p>
 
           {error && (
-            <div className="mb-6 p-3 bg-red-50 border border-red-200 rounded-md text-red-700 text-sm">
+            <div className="mb-6 rounded-lg border border-pill-red-fg/30 bg-pill-red-bg p-3 text-sm text-pill-red-fg">
               {error}
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-4">
             <div>
-              <label className="block text-sm font-medium text-brand-text mb-2">Work Email</label>
+              <label className="mb-1.5 block text-[12px] font-semibold text-ink">Work Email</label>
               <input
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none"
+                className="w-full rounded-lg border border-input-line bg-surface px-4 py-2.5 text-[13.5px] text-ink outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                 placeholder="you@company.com"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-brand-text mb-2">Password</label>
+              <label className="mb-1.5 block text-[12px] font-semibold text-ink">Password</label>
               <input
                 type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 required
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-brand-primary focus:border-transparent outline-none"
+                className="w-full rounded-lg border border-input-line bg-surface px-4 py-2.5 text-[13.5px] text-ink outline-none transition focus:border-brand-primary focus:ring-2 focus:ring-brand-primary/15"
                 placeholder="••••••••"
               />
             </div>
@@ -107,13 +117,13 @@ export default function SignIn() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-brand-primary text-white py-2 rounded-lg font-medium hover:bg-opacity-90 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full rounded-lg bg-brand-primary py-2.5 text-[13.5px] font-semibold text-white transition-colors hover:bg-brand-primary-dark disabled:cursor-not-allowed disabled:opacity-50"
             >
               {loading ? 'Signing in...' : 'Sign in'}
             </button>
           </form>
 
-          <p className="mt-6 text-center text-sm text-gray-600">
+          <p className="mt-6 text-center text-[13px] text-ink-2">
             Demo credentials: admin@ecosphere.dev / demo1234
           </p>
         </div>

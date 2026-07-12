@@ -29,7 +29,7 @@ export function ProofButton({
   label?: string
 }) {
   const [open, setOpen] = useState(false)
-  if (!url) return <span className="text-brand-muted">—</span>
+  if (!url) return <span className="text-ink-2">—</span>
 
   return (
     <>
@@ -47,19 +47,19 @@ export function ProofButton({
             className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={() => setOpen(false)}
           />
-          <div className="relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-xl bg-white shadow-2xl">
-            <div className="flex items-center justify-between border-b border-black/5 px-4 py-3">
-              <h3 className="text-sm font-semibold text-brand-text">Submitted proof</h3>
+          <div className="relative z-10 flex w-full max-w-lg flex-col overflow-hidden rounded-xl border border-line bg-surface shadow-[0_24px_60px_rgba(31,41,55,.24)]">
+            <div className="flex items-center justify-between border-b border-line-soft px-4 py-3">
+              <h3 className="text-sm font-semibold text-ink">Submitted proof</h3>
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="rounded-md p-1 text-brand-muted hover:bg-brand-surface"
+                className="rounded-md p-1 text-ink-2 hover:bg-hover"
                 aria-label="Close"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
-            <div className="flex max-h-[70vh] items-center justify-center overflow-auto bg-brand-surface/40 p-4">
+            <div className="flex max-h-[70vh] items-center justify-center overflow-auto bg-canvas p-4">
               {isImage(url) ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
@@ -78,12 +78,12 @@ export function ProofButton({
                 </a>
               )}
             </div>
-            <div className="flex justify-end border-t border-black/5 px-4 py-3">
+            <div className="flex justify-end border-t border-line-soft px-4 py-3">
               <a
                 href={url}
                 target="_blank"
                 rel="noreferrer"
-                className="text-xs text-brand-muted hover:text-brand-text"
+                className="text-xs text-ink-2 hover:text-ink"
               >
                 Open original ↗
               </a>
@@ -175,7 +175,7 @@ export function UploadProofButton({
           e.target.value = ''
         }}
       />
-      {error && <span className="text-[11px] text-red-600">{error}</span>}
+      {error && <span className="text-[11px] text-pill-red-fg">{error}</span>}
     </span>
   )
 }
