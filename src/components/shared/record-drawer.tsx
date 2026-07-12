@@ -6,8 +6,8 @@ import { Button } from '@/components/ui/button'
 type DrawerSize = 'md' | 'lg'
 
 const sizeMap: Record<DrawerSize, string> = {
-  md: 'w-[500px]',
-  lg: 'w-[700px]',
+  md: 'w-full sm:w-[500px]',
+  lg: 'w-full sm:w-[720px]',
 }
 
 interface RecordDrawerProps {
@@ -38,7 +38,7 @@ export function RecordDrawer({
           <SheetTitle>{title}</SheetTitle>
         </SheetHeader>
 
-        <div className="py-6">{children}</div>
+        <div className="flex-1 py-6">{children}</div>
 
         <SheetFooter className="flex gap-2">
           <Button variant="outline" onClick={onDiscard} disabled={loading}>

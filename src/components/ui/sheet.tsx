@@ -39,10 +39,10 @@ const SheetContent = React.forwardRef<
       <SheetOverlay />
       <SheetPrimitive.Content
         ref={ref}
-        className={`fixed z-50 gap-4 bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out ${
+        className={`fixed z-50 flex flex-col gap-4 overflow-y-auto bg-white p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out ${
           side === 'top' || side === 'bottom'
             ? `inset-x-0 max-h-[50vh] ${sideClasses[side]} data-[state=closed]:slide-out-to-${side === 'top' ? 'top' : 'bottom'}-full data-[state=open]:slide-in-from-${side === 'top' ? 'top' : 'bottom'}-full`
-            : `inset-y-0 max-w-sm ${sideClasses[side]} data-[state=closed]:slide-out-to-${side} data-[state=open]:slide-in-from-${side}`
+            : `inset-y-0 max-w-[100vw] ${sideClasses[side]} data-[state=closed]:slide-out-to-${side} data-[state=open]:slide-in-from-${side}`
         } ${className || ''}`}
         {...props}
       >

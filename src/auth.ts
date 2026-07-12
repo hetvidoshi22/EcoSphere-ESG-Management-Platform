@@ -13,6 +13,10 @@ declare module 'next-auth' {
 }
 
 const config = NextAuth({
+  // Trust the deployment host (Vercel, localhost, custom ports). Without this
+  // Auth.js v5 throws UntrustedHost in production/self-hosted mode and every
+  // auth() call fails, so the whole app cannot authenticate.
+  trustHost: true,
   providers: [
     Credentials({
       credentials: {

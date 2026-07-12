@@ -11,6 +11,9 @@
 // contract itself.
 // =============================================================
 
+import { socialScoreProvider } from '@/server/services/score/social'
+import { governanceScoreProvider } from '@/server/services/score/governance'
+
 export type ScorePeriod = string // "2026-07"
 
 export interface ScoreBreakdown {
@@ -93,6 +96,11 @@ export async function getScore(
  *   registerProvider(socialScoreProvider)         // Hetvi
  *   registerProvider(governanceScoreProvider)     // Hetvi
  */
+let registered = false
 export function registerProviders() {
-  // Providers are registered here by module owners.
+  if (registered) return
+  registered = true
+  // Providers are registered here by module owners (sanctioned one-liners).
+  registerProvider(socialScoreProvider) // Hetvi
+  registerProvider(governanceScoreProvider) // Hetvi
 }
