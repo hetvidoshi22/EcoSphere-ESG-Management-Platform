@@ -19,15 +19,14 @@ import { DataTable, type Column } from '@/components/shared/data-table'
 import { ReportChrome, type TimeRange } from '@/components/shared/report-chrome'
 import { apiGet } from '@/lib/api'
 import { downloadCsv } from '@/lib/csv'
-import type { DashboardSummary } from '@/server/services/dashboard'
-import type { DeptScoreRow } from '@/server/services/score/read'
+import type { Scoreboard, DeptScoreRow } from '@/server/services/score/read'
 
 export default function EsgSummaryReportPage() {
   const [range, setRange] = useState<TimeRange>('month')
 
-  const { data, isLoading } = useQuery<DashboardSummary>({
-    queryKey: ['dashboard'],
-    queryFn: () => apiGet<DashboardSummary>('/api/dashboard/summary'),
+  const { data, isLoading } = useQuery<Scoreboard>({
+    queryKey: ['scoreboard'],
+    queryFn: () => apiGet<Scoreboard>('/api/scoreboard'),
   })
 
   const chart =

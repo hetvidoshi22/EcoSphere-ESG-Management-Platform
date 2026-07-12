@@ -8,7 +8,7 @@ import {
   xpLedger,
 } from '@/db/schema'
 import { conflict, notFound, unprocessable } from '@/server/errors'
-import { notify, notifyRoles } from '@/server/services/notification'
+import { notify, notifyRole } from '@/server/services/notification'
 import { getEsgConfig } from '@/server/services/config'
 import { recalculateScores } from '@/server/services/score/recalculate'
 
@@ -87,12 +87,10 @@ export async function joinActivity(userId: string, activityId: string, proofUrl?
     .values({ userId, activityId, proofUrl: proofUrl ?? null, approvalStatus: 'PENDING' })
     .returning()
 
-  await notifyRoles(
-    ['HR_MANAGER', 'ADMIN'],
-    'APPROVAL',
-    'New participation pending',
-    `A submission for "${activity.title}" is awaiting approval.`,
-  )
+  await Promise.all([
+    notifyRole('HR_MANAGER', 'APPROVAL', 'New participation pending', `A submission for "${activity.title}" is awaiting approval.`),
+    notifyRole('ADMIN', 'APPROVAL', 'New participation pending', `A submission for "${activity.title}" is awaiting approval.`),
+  ])
   return row
 }
 

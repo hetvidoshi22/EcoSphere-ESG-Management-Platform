@@ -57,20 +57,25 @@ export function Topbar({ session, onMenuClick }: TopbarProps) {
       .slice(0, 2)
       .toUpperCase() || 'U'
 
-  const { data: notifications = [] } = useQuery<NotificationRow[]>({
+  const { data } = useQuery<{ notifications: NotificationRow[]; unread: number }>({
     queryKey: ['notifications'],
     queryFn: async () => {
       const res = await fetch('/api/notifications')
-      if (!res.ok) return []
+      if (!res.ok) return { notifications: [], unread: 0 }
       return res.json()
     },
-    refetchInterval: 15000,
+    refetchInterval: 30000,
   })
 
-  const unread = notifications.filter((n) => !n.read).length
+  const notifications = data?.notifications ?? []
+  const unread = data?.unread ?? 0
 
   const markAllRead = async () => {
-    await fetch('/api/notifications', { method: 'PATCH' })
+    await Promise.all(
+      notifications
+        .filter((n) => !n.read)
+        .map((n) => fetch(`/api/notifications/${n.id}/read`, { method: 'PATCH' })),
+    )
     queryClient.invalidateQueries({ queryKey: ['notifications'] })
   }
 

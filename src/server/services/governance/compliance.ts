@@ -3,7 +3,7 @@ import { db } from '@/db'
 import { complianceIssues, audits, departments, users } from '@/db/schema'
 import type { ComplianceCreate } from '@/server/validators/governance'
 import { notFound } from '@/server/errors'
-import { notify, notifyRoles } from '@/server/services/notification'
+import { notify, notifyRole } from '@/server/services/notification'
 import { recalculateScores } from '@/server/services/score/recalculate'
 
 export interface ComplianceIssueView {
@@ -85,7 +85,10 @@ export async function createComplianceIssue(data: ComplianceCreate) {
     'Compliance issue assigned to you',
     `${data.description}${overdue ? ' (already past due)' : ''}`,
   )
-  await notifyRoles(['COMPLIANCE_OFFICER', 'ADMIN'], 'COMPLIANCE', 'New compliance issue raised', data.description)
+  await Promise.all([
+    notifyRole('COMPLIANCE_OFFICER', 'COMPLIANCE', 'New compliance issue raised', data.description),
+    notifyRole('ADMIN', 'COMPLIANCE', 'New compliance issue raised', data.description),
+  ])
 
   await recalculateScores() // a new open issue lowers issue-closure
   return row

@@ -22,15 +22,15 @@ import { ReportChrome, rangeStart, type TimeRange } from '@/components/shared/re
 import { apiGet } from '@/lib/api'
 import { downloadCsv } from '@/lib/csv'
 import { formatDate } from '@/lib/utils'
-import type { DashboardSummary } from '@/server/services/dashboard'
+import type { Scoreboard } from '@/server/services/score/read'
 import type { ComplianceIssueView } from '@/server/services/governance/compliance'
 
 export default function GovernanceReportPage() {
   const [range, setRange] = useState<TimeRange>('fy')
 
-  const { data: summary } = useQuery<DashboardSummary>({
-    queryKey: ['dashboard'],
-    queryFn: () => apiGet<DashboardSummary>('/api/dashboard/summary'),
+  const { data: board } = useQuery<Scoreboard>({
+    queryKey: ['scoreboard'],
+    queryFn: () => apiGet<Scoreboard>('/api/scoreboard'),
   })
   const { data: issues = [], isLoading } = useQuery<ComplianceIssueView[]>({
     queryKey: ['compliance-issues'],
@@ -44,9 +44,11 @@ export default function GovernanceReportPage() {
 
   const open = filtered.filter((i) => i.status !== 'RESOLVED').length
   const overdue = filtered.filter((i) => i.overdue).length
+  const resolved = filtered.length - open
+  const closureRate = filtered.length ? Math.round((resolved / filtered.length) * 100) : 0
 
   const chart =
-    summary?.departments.map((d) => ({
+    board?.departments.map((d) => ({
       name: d.departmentName,
       score: Math.round(d.governance),
     })) ?? []
@@ -82,7 +84,7 @@ export default function GovernanceReportPage() {
       <ReportChrome range={range} onRange={setRange} onExport={exportCsv} />
 
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <KpiTile label="Issue Closure Rate" value={`${summary?.kpis.issueClosureRate ?? 0}%`} />
+        <KpiTile label="Issue Closure Rate" value={`${closureRate}%`} />
         <KpiTile label="Open Issues" value={open} />
         <KpiTile label="Overdue" value={overdue} />
         <KpiTile label="Total Issues" value={filtered.length} />

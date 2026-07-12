@@ -1,27 +1,21 @@
-import { NextResponse } from 'next/server'
-import { desc, eq } from 'drizzle-orm'
+import { NextRequest, NextResponse } from 'next/server'
+import { withAuth } from '@/server/api-helpers'
 import { db } from '@/db'
 import { notifications } from '@/db/schema'
-import { withAuth } from '@/server/api-helpers'
-import { sessionUser } from '@/server/errors'
+import { eq, desc } from 'drizzle-orm'
 
-export const GET = withAuth(async (_req, ctx) => {
-  const user = sessionUser(ctx.session)
+// GET /api/notifications → the caller's own latest 15, plus unread count.
+export const GET = withAuth(async (_req: NextRequest, ctx?: any) => {
+  const userId = ctx.session.user.id
+
   const rows = await db
     .select()
     .from(notifications)
-    .where(eq(notifications.userId, user.id))
+    .where(eq(notifications.userId, userId))
     .orderBy(desc(notifications.createdAt))
-    .limit(20)
-  return NextResponse.json(rows)
-})
+    .limit(15)
 
-/** Mark all of the current user's notifications as read. */
-export const PATCH = withAuth(async (_req, ctx) => {
-  const user = sessionUser(ctx.session)
-  await db
-    .update(notifications)
-    .set({ read: true })
-    .where(eq(notifications.userId, user.id))
-  return NextResponse.json({ ok: true })
+  const unread = rows.filter((n) => !n.read).length
+
+  return NextResponse.json({ notifications: rows, unread })
 })

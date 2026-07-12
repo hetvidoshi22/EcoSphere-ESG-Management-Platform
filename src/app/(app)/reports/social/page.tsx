@@ -21,15 +21,15 @@ import { ReportChrome, rangeStart, type TimeRange } from '@/components/shared/re
 import { apiGet } from '@/lib/api'
 import { downloadCsv } from '@/lib/csv'
 import { formatDate } from '@/lib/utils'
-import type { DashboardSummary } from '@/server/services/dashboard'
+import type { Scoreboard } from '@/server/services/score/read'
 import type { ParticipationView } from '@/server/services/social/participation'
 
 export default function SocialReportPage() {
   const [range, setRange] = useState<TimeRange>('fy')
 
-  const { data: summary } = useQuery<DashboardSummary>({
-    queryKey: ['dashboard'],
-    queryFn: () => apiGet<DashboardSummary>('/api/dashboard/summary'),
+  const { data: board } = useQuery<Scoreboard>({
+    queryKey: ['scoreboard'],
+    queryFn: () => apiGet<Scoreboard>('/api/scoreboard'),
   })
   const { data: parts = [], isLoading } = useQuery<ParticipationView[]>({
     queryKey: ['participation'],
@@ -46,7 +46,7 @@ export default function SocialReportPage() {
   const rejected = filtered.filter((p) => p.approvalStatus === 'REJECTED').length
 
   const chart =
-    summary?.departments.map((d) => ({ name: d.departmentName, score: Math.round(d.social) })) ??
+    board?.departments.map((d) => ({ name: d.departmentName, score: Math.round(d.social) })) ??
     []
 
   const exportCsv = () =>
@@ -76,7 +76,7 @@ export default function SocialReportPage() {
       <ReportChrome range={range} onRange={setRange} onExport={exportCsv} />
 
       <div className="mb-6 grid grid-cols-2 gap-4 lg:grid-cols-4">
-        <KpiTile label="Participation Rate" value={`${summary?.kpis.participationRate ?? 0}%`} />
+        <KpiTile label="Avg Social Score" value={Math.round(board?.overall.social ?? 0)} />
         <KpiTile label="Approved" value={approved} />
         <KpiTile label="Pending" value={pending} />
         <KpiTile label="Rejected" value={rejected} />
